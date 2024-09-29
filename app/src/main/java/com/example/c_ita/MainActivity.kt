@@ -1,35 +1,41 @@
 package com.example.c_ita
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.Gravity
-import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.c_ita.screens.LoginScreen
 
-class MainActivity : AppCompatActivity() {
-
-    @SuppressLint("SetTextI18n")
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Crear una vista simple para MainActivity
-        val mainLayout = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER
+        setContent {
+            ComposeMultiScreenApp()
         }
-
-        // Crear un TextView que diga "Bienvenido"
-        val welcomeTextView = TextView(this).apply {
-            text = "Bienvenido a C-Ita"
-            textSize = 24f
-            gravity = Gravity.CENTER
-        }
-
-        // Agregar el TextView al layout principal
-        mainLayout.addView(welcomeTextView)
-
-        // Establecer el layout principal como la vista de la actividad
-        setContentView(mainLayout)
     }
-}
+
+
+            @Composable
+            fun ComposeMultiScreenApp() {
+                val navController = rememberNavController()
+                Surface(color = Color.White) {
+                    setupNavGraph(navController = navController)
+                }
+            }
+
+            @Composable
+            fun setupNavGraph(navController: NavHostController) {
+                NavHost(navController = navController, startDestination = "Login") {
+                    composable("Login") {
+                        LoginScreen(navController)
+                    }
+
+                }
+            }
+        }
