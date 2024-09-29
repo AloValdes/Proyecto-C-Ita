@@ -61,11 +61,13 @@ fun LoginScreen(navController: NavHostController) {
                 onClick = {
                     if (email.isNotEmpty() && password.isNotEmpty()) {
                         // Navegar a MainActivity
-                        navController.navigate("Main") // Navegar a la pantalla principal
+                        navController.navigate("Menu") // Navegar a la pantalla tipo fb
                     } else {
-                        Toast.makeText(LocalContext.current,
+                        Toast.makeText(
+                            context, // Usa el contexto pasado
                             "Por favor, ingresar los datos completos",
-                            Toast.LENGTH_SHORT).show()
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 },
                 modifier = Modifier
