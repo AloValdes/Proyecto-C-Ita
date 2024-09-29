@@ -1,5 +1,6 @@
 package com.example.c_ita.screens
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -7,21 +8,18 @@ import android.text.InputType
 import android.view.Gravity
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.unit.dp
 import androidx.core.view.setPadding
 import com.example.c_ita.MainActivity
-import com.example.c_ita.R
 
 class LoginActivity : AppCompatActivity() {
 
     // Función de extensión para convertir dp a px
     private fun Int.toPx(): Int = (this * resources.displayMetrics.density).toInt()
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
