@@ -11,106 +11,98 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.core.app.ComponentActivity
 import androidx.core.view.setPadding
 import com.example.c_ita.MainActivity
+import java.lang.reflect.Modifier
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : ComponentActivity() {
 
-    // Función de extensión para convertir dp a px
-    private fun Int.toPx(): Int = (this * resources.displayMetrics.density).toInt()
-
-    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Crear el contenedor principal (LinearLayout)
-        val mainLayout = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setBackgroundColor(Color.parseColor("#2A1A5E")) // Fondo azul oscuro
-            gravity = Gravity.CENTER
-            setPadding(32.toPx(),
-                32.toPx(),
-                32.toPx(),
-                32.toPx()) // Padding alrededor del layout
+        setContent {
+            LoginScreen()
         }
+    }
+}
 
-        // Campo de entrada para el correo (EditText)
-        val emailEditText = EditText(this).apply {
-            hint = "Correo electrónico"
-            inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
-            setPadding(24.toPx())
-            setBackgroundResource(android.R.drawable.edit_text) // Ajustar fondo para evitar problemas de recursos
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                setMargins(0,
-                    0,
-                    0,
-                    20.toPx())
-            }
-        }
+@Composable
+fun LoginScreen() {
+    // Estado para los campos de texto
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
 
-        // Campo de entrada para la contraseña (EditText)
-        val passwordEditText = EditText(this).apply {
-            hint = "Contraseña"
-            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-            setPadding(24.toPx())
-            setBackgroundResource(android.R.drawable.edit_text)
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                setMargins(0,
-                    0,
-                    0,
-                    20.toPx())
-            }
-        }
+    // Contenedor principal
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(Color(0xFF2A1A5E)), Alignment.Center // Fondo azul oscuro
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(32.dp)
+                .padding(32.dp)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Campo de entrada para el correo
+            TextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Correo electrónico") },
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 20.dp)
+            )
 
-        // Botón de inicio de sesión (Button)
-        val loginButton = Button(this).apply {
-            text = "Iniciar sesión"
-            setBackgroundColor(Color.parseColor("#3E92CC"))
-            setTextColor(Color.WHITE)
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                gravity = Gravity.CENTER
-                setMargins(0,
-                    20.toPx(),
-                    0,
-                    0)
-            }
-        }
+            // Campo de entrada para la contraseña
+            TextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Contraseña") },
+                visualTransformation = PasswordVisualTransformation(), // Muestra asteriscos
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 20.dp)
+            )
 
-        // Agregar vistas al layout principal
-        mainLayout.addView(emailEditText)
-        mainLayout.addView(passwordEditText)
-        mainLayout.addView(loginButton)
+            // Botón de inicio de sesión
+            Button(
+                onClick = {
+                    if (email.isNotEmpty() && password.isNotEmpty()) {
+                        // Navegar a MainActivity
+                        val intent = Intent(LocalContext.current, MainActivity::class.java)
+                        LocalContext.current.startActivity(intent)
 
-        // Establecer el layout principal como la vista de la actividad
-        setContentView(mainLayout)
-
-        // Acción del botón de inicio de sesión
-        loginButton.setOnClickListener {
-            val email = emailEditText.text.toString().trim()
-            val password = passwordEditText.text.toString().trim()
-
-            // Si el campo de correo y contraseña no están vacíos, se pasa a MainActivity
-            if (email.isNotEmpty() && password.isNotEmpty()) {
-                // Navegar a MainActivity
-                val intent = Intent(this,
-                    MainActivity::class.java)
-                startActivity(intent)
-
-                // Opcional: Finalizar LoginActivity para que no se pueda volver atrás
-                finish()
-            } else {
-                Toast.makeText(this,
-                    "Por favor, ingresar los datos completos",
-                    Toast.LENGTH_SHORT).show()
+                        // Opcional: Finalizar LoginActivity para que no se pueda volver atrás
+                        (LocalContext.current as LoginActivity).finish()
+                    } else {
+                        Toast.makeText(LocalContext.current, "Por favor, ingresar los datos completos", Toast.LENGTH_SHORT).show()
+                    }
+                },
+                modifier = Modifier
+                    .padding(top = 20.dp)
+                    .fillMaxWidth()
+                    .background(Color(0xFF3E92CC))
+            ) {
+                Text(text = "Iniciar sesión", color = Color.White)
             }
         }
     }
